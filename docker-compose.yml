@@ -1,0 +1,35 @@
+version: "3.6"
+
+services:
+    prometheus:
+        image: prom/prometheus:v2.2.1
+        volumes:
+            - ./prometheus:/etc/prometheus
+            - type: volume
+              source: prometheus_data
+              target: /prometheus
+        command:
+            - '--config.file=/etc/prometheus/prometheus.yml'
+            - '--storage.tsdb.path=/prometheus'
+            - '--storage.tsdb.retention=60d'
+        ports:
+            - 9090:9090
+        restart: unless-stopped
+
+    grafana:
+        image: grafana/grafana:5.0.4
+        depends_on:
+            - prometheus
+        volumes:
+            - ./grafana/provisioning/:/etc/grafana/provisioning/
+            - type: volume
+              source: grafana_data
+              target: /var/lib/grafana
+        env_file:
+            - ./grafana/config.monitoring
+        ports:
+            - 3000:3000
+        restart: unless-stopped
+volumes:
+    prometheus_data: {}
+    grafana_data: {}
