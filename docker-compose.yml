@@ -2,7 +2,7 @@ version: "3.6"
 
 services:
     prometheus:
-        image: prom/prometheus:v2.2.1
+        image: prom/prometheus:v2.3.1
         volumes:
             - ./prometheus:/etc/prometheus
             - type: volume
@@ -17,18 +17,17 @@ services:
         restart: unless-stopped
 
     grafana:
-        image: grafana/grafana:5.0.4
+        image: grafana/grafana:5.2.1
         depends_on:
             - prometheus
         volumes:
+            - grafana_data:/var/lib/grafana
             - ./grafana/provisioning/:/etc/grafana/provisioning/
-            - type: volume
-              source: grafana_data
-              target: /var/lib/grafana
         env_file:
             - ./grafana/config.monitoring
         ports:
             - 3000:3000
+        user: "104"
         restart: unless-stopped
 volumes:
     prometheus_data: {}
