@@ -2,7 +2,7 @@ version: "3.6"
 
 services:
     prometheus:
-        image: prom/prometheus:v2.3.1
+        image: prom/prometheus:v2.31.1
         volumes:
             - ./prometheus:/etc/prometheus
             - type: volume
@@ -11,13 +11,13 @@ services:
         command:
             - '--config.file=/etc/prometheus/prometheus.yml'
             - '--storage.tsdb.path=/prometheus'
-            - '--storage.tsdb.retention=360d'
+            - '--storage.tsdb.retention=90d'
         ports:
             - 9090:9090
         restart: unless-stopped
 
     grafana:
-        image: grafana/grafana:5.2.1
+        image: grafana/grafana:8.2.3
         depends_on:
             - prometheus
         volumes:
